@@ -1,7 +1,7 @@
 import React from 'react'
 import Timer from './Timer'
 import Tasks from './Tasks'
-import './Try.css'
+import './Trial.css'
 
 class Try extends React.PureComponent {
   constructor(props) {

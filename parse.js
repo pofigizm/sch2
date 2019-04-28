@@ -48,4 +48,4 @@ all.forEach((line, ix) => {
 
 })
 
-fs.writeFileSync('./src/tasks.json', JSON.stringify(tasks, null, 2))
+fs.writeFileSync('./src/tasks.json', JSON.stringify({ tasks }, null, 2))
