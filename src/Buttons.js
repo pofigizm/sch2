@@ -11,7 +11,7 @@ const styles = theme => ({
     	margin: theme.spacing.unit,
     	marginLeft: 0,
     	marginRight: 20,
-    	width: 80,
+    	width: 120,
  	},
   	input: {
     	display: 'none',
@@ -20,9 +20,8 @@ const styles = theme => ({
 
 
 function Buttons({
-	onPressStart = () => {},	
-	onPressClear = () => {},
-	count,
+	onPress = () => {},	
+	stage,
 	classes,
 }) {
 	return (
@@ -30,19 +29,11 @@ function Buttons({
 			<Button
 				variant="contained"
 				color="primary"
-       			onClick={() => onPressStart('s')}
-       			className={classes.button}
-       		>
-       			{count ? 'stop' : 'start'}
-       		</Button>
-			<Button
-				variant="contained"
-				color="primary"
-       			onClick={() => onPressClear('c')}
-       			className={classes.button}
-       		>
-       			clear
-       		</Button>
+        onClick={() => onPress('s')}
+        className={classes.button}
+      >
+        {stage} - {stage ? 'next' : 'start'}
+      </Button>
 		</div>
 	)
 }

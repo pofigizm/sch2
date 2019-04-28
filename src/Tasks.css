@@ -5,6 +5,11 @@
   border-bottom: none;
 }
 
+.tasks .blur {
+  filter: blur(5px);
+  opacity: 0.5;
+}
+
 .tasks > li {
   list-style-position: inside;
   border-bottom: 1px solid black;
@@ -35,13 +40,41 @@
 .tasks > li > .buttons > button {
   margin: 10px 20px 0;
   height: 20px;
-  background-color: #3f51b5;
+  background-color: lightgray;
   color: white;
   border: none;
   border-radius: 3px;
   cursor: pointer;
 }
 
+.tasks > li > .buttons > button.green {
+  background-color: green;
+}
+
+.tasks > li > .buttons > button.red {
+  background-color: red;
+}
+
+.tasks > li > .buttons > button.none {
+  background-color: #3f51b5;
+}
+
 .tasks > li > .buttons > button:focus {
   outline: 0;
+}
+
+.tasks > li > .input {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 100px;
+  border-left: 1px solid black;
+}
+
+.tasks > li > .input > input {
+  margin: 10px 20px 0;
+  height: 20px;
 }
