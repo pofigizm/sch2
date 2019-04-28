@@ -24,16 +24,7 @@ const shuffle = arr => {
 const generate = tasks => {
   const all = Object.values(tasks)
 
-  const easy = all.filter(t => !t.hard && t.list > 5)
-  const hard = all.filter(t => t.hard && t.list < 12)
-  const extraHard = all.filter(t => t.hard && t.list > 11)
-
-  const res = []
-    .concat(shuffle(easy).slice(0, 1))
-    .concat(shuffle(hard).slice(0, 8))
-    .concat(shuffle(extraHard).slice(0, 1))
-  
-  return shuffle(res)
+  return shuffle(all.filter(t => t.hard && !t.solved)).slice(0, 10)
 }
 
 class App extends React.PureComponent {
@@ -52,6 +43,7 @@ class App extends React.PureComponent {
           <Trial
             id={current.id}
             tasks={current.tasks}
+            onSolved={this.handleSolve}
             onFinish={this.handleFinish}
           />
         ) }
@@ -73,6 +65,29 @@ class App extends React.PureComponent {
     )
   }
 
+  handleSolve = (ix) => {
+    const { tasks, current } = this.state
+    const task = current.tasks[ix]
+    const curIds = current.tasks.map(t => t.id)
+    const nextTask = generate(tasks).filter(t => !curIds.includes(t.id))[0] || {}
+    const next = [ ...current.tasks ]
+    next[ix] = nextTask
+
+    this.setState({
+      tasks: {
+        ...tasks,
+        [task.id]: {
+          ...task,
+          solved: true,
+        },
+      },
+      current: {
+        ...current,
+        tasks: next,
+      },
+    })
+  }
+
   handleStart = () => {
     const tasks = generate(this.state.tasks)
     const id = Math.max(...(this.state.trials || [{ id: 0 }]).map(t => t.id)) + 1
@@ -87,7 +102,7 @@ class App extends React.PureComponent {
     })
   }
 
-  handleFinish = (id, data) => {
+  handleFinish = (data) => {
     const { current, trials } = this.state
     const trial = { ...current, ...data }
     this.setState({

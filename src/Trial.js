@@ -8,9 +8,6 @@ class Try extends React.PureComponent {
     super(props)
 
     this.state = {
-      complexity: {},
-      timeComplexity: 0,
-
       answers: {},
       timeSimple: 0,
       timeHard: 0,
@@ -29,9 +26,8 @@ class Try extends React.PureComponent {
         <Tasks
           stage={this.state.stage}
           tasks={this.props.tasks}
-          complexity={this.state.complexity}
           answers={this.state.answers}
-          onComplexity={this.handleComplexity}
+          onSolved={this.handleSolved}
           onAnswer={this.handleAnswer}
         />
       </div>
@@ -51,14 +47,6 @@ class Try extends React.PureComponent {
     if (stage === 1) {
       this.setState({
         stage: 2,
-        timeComplexity: time,
-      })
-      return
-    }
-
-    if (stage === 2) {
-      this.setState({
-        stage: 3,
         timeSimple: time,
       })
       return
@@ -67,20 +55,18 @@ class Try extends React.PureComponent {
     this.setState({
       timeHard: time,
     }, () => {
-      this.props.onFinish(this.props.id, {
+      this.props.onFinish({
         id: this.props.id,
         ...this.state
       })
     })
   }
 
-  handleComplexity = (id, value) => {
-    this.setState({
-      complexity: {
-        ...this.state.complexity,
-        [id]: value,
-      }
-    })
+  handleSolved = (id) => {
+    const { tasks, onSolved } = this.props
+    const ix = tasks.findIndex(t => t.id === id)
+  
+    onSolved(ix)
   }
 
   handleAnswer = (id, value) => {
