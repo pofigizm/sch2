@@ -23,12 +23,14 @@ const shuffle = arr => {
 
 const generate = tasks => {
   const all = Object.values(tasks)
+  const hard = all.filter(t => t.hard && !t.solved && !t.problem)
 
-  return shuffle(all.filter(t => t.hard && !t.solved)).slice(0, 10)
+  return shuffle(hard).slice(0, 10)
 }
 
 class App extends React.PureComponent {
   state = {
+    version: 1,
     ...(read() || tasksData),
     current: null,
   }
@@ -41,10 +43,11 @@ class App extends React.PureComponent {
  
         { current && (
           <Trial
-            id={current.id}
-            tasks={current.tasks}
+            current={current}
             onSolved={this.handleSolve}
+            onProblem={this.handleProblem}
             onFinish={this.handleFinish}
+            onHide={this.handleHide}
           />
         ) }
 
@@ -52,7 +55,7 @@ class App extends React.PureComponent {
           <div>
             <ul>
               { (this.state.trials || []).map(trial => (
-                <li key={trial.id}>
+                <li key={trial.id} onClick={() => this.handleShow(trial)} >
                   {trial.id}: {(new Date(trial.ts)).toString()} 
                 </li>
               )) }
@@ -63,6 +66,18 @@ class App extends React.PureComponent {
           
       </div>
     )
+  }
+
+  handleShow = (trial) => {
+    this.setState({
+      current: trial,
+    })
+  }
+
+  handleHide = () => {
+    this.setState({
+      current: null,
+    })
   }
 
   handleSolve = (ix) => {
@@ -85,6 +100,28 @@ class App extends React.PureComponent {
         ...current,
         tasks: next,
       },
+    })
+  }
+
+  handleProblem = (id) => {
+    const { current, tasks } = this.state
+
+    this.setState({
+      tasks: {
+        ...tasks,
+        [id]: {
+          ...tasks[id],
+          problem: true,
+        },
+      },
+    }, () => {
+      const next = current.tasks.map(t => this.state.tasks[t.id])
+      this.setState({
+        current: {
+          ...current,
+          tasks: next,
+        },
+      })
     })
   }
 

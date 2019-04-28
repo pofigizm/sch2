@@ -12,21 +12,36 @@ class Tasks extends React.PureComponent {
           .map(task => (
           <li key={task.id}>
             <span dangerouslySetInnerHTML={{ __html: task.content }} />
-            { this.renderInput(task.id) }
+            { this.renderInput(task.id, task.problem) }
           </li>
         )) }
       </ol>
     )
   }
 
-  renderInput(id) {
-    const { answers, onSolved, onAnswer } = this.props
+  renderInput(id, problem) {
+    const { stage, answers, onSolved, onProblem, onAnswer } = this.props
     const current = answers[id] || ''
 
     return (
       <div className="input">
         <input value={ current } onChange={ (ev) => onAnswer(id, ev.target.value) } />
-        <button onClick={ () => onSolved(id) }>Solved</button>
+        <div className="buttons" >
+          <button
+            className={stage === 3 ? '' : 'green'}
+            disabled={stage === 3}
+            onClick={ () => onSolved(id) }
+          >
+            Solved
+          </button>
+          <button
+            className={(stage < 2 || problem) ? '' : 'red'}
+            disabled={(stage < 2 || problem)}
+            onClick={ () => onProblem(id) }
+          >
+            Problem
+          </button>
+        </div>
       </div>
     )
   }

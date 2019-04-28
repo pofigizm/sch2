@@ -32,7 +32,7 @@ function Buttons({
         onClick={() => onPress('s')}
         className={classes.button}
       >
-        {stage} - {stage ? 'next' : 'start'}
+        {stage} - { stage === 0 ? 'start' : (stage === 3 ? 'close' : 'next') }
       </Button>
 		</div>
 	)

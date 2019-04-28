@@ -13,32 +13,41 @@ class Try extends React.PureComponent {
       timeHard: 0,
 
       stage: 0,
+
+      ...props.current,
     }
   }
 
   render() {
+    const { sec, stage, answers } = this.state
+    const { tasks } = this.props.current
+
     return (
       <div className="try">
         <Timer 
-          stage={this.state.stage}
+          sec={sec}
+          stage={stage}
           onNextStage={this.handleNextStage}
+          onClose={this.handleClose}
         />
         <Tasks
-          stage={this.state.stage}
-          tasks={this.props.tasks}
-          answers={this.state.answers}
+          stage={stage}
+          tasks={tasks}
+          answers={answers}
           onSolved={this.handleSolved}
+          onProblem={this.handleProblem}
           onAnswer={this.handleAnswer}
         />
       </div>
     )
   }
 
-  handleNextStage = (time) => {
+  handleNextStage = (time, sec) => {
     const { stage } = this.state
 
     if (stage === 0) {
       this.setState({
+        sec,
         stage: 1,
       })
       return
@@ -46,6 +55,7 @@ class Try extends React.PureComponent {
 
     if (stage === 1) {
       this.setState({
+        sec,
         stage: 2,
         timeSimple: time,
       })
@@ -53,26 +63,42 @@ class Try extends React.PureComponent {
     }
 
     this.setState({
+      sec,
+      stage: 3,
       timeHard: time,
     }, () => {
       this.props.onFinish({
-        id: this.props.id,
         ...this.state
       })
     })
   }
 
+  handleClose = () => {
+    const { onHide } = this.props
+    onHide()
+  }
+
   handleSolved = (id) => {
-    const { tasks, onSolved } = this.props
+    const { current, onSolved } = this.props
+    const { tasks } = current
+
     const ix = tasks.findIndex(t => t.id === id)
-  
+ 
     onSolved(ix)
   }
 
+  handleProblem = (id) => {
+    const { onProblem } = this.props
+ 
+    onProblem(id)
+  }
+
   handleAnswer = (id, value) => {
+    const { answers } = this.state
+
     this.setState({
       answers: {
-        ...this.state.answers,
+        ...answers,
         [id]: value,
       }
     })

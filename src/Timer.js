@@ -37,11 +37,12 @@ class Timer extends React.Component {
 		super(props)
 
 		this.state = {
-			sec: 0
+			sec: props.sec || 0,
 		}
 
 		this.timer = window.setInterval(() => {
-			if (this.props.stage) {
+      const { stage } = this.props
+			if (stage > 0 && stage < 3) {
 				const sec = this.state.sec + 1
 				this.setState({ sec })
 			} 
@@ -65,20 +66,25 @@ class Timer extends React.Component {
 						component="h3"
 					>
 						{humanTime(sec)}
-					</Typography>				
-					<Buttons
-						stage={stage} 
-						onPress={this.handleButton}
-					/>
+					</Typography>
+          <Buttons
+            stage={stage} 
+            onPress={this.handleButton}
+          />
 				</Paper>
 			</div>
 		)
 	}
 
 	handleButton = () => {
-    const { onNextStage } = this.props;
+    const { stage, onNextStage, onClose } = this.props;
 
-    onNextStage(humanTime(this.state.sec))
+    if (stage === 3) {
+      onClose()
+      return
+    }
+
+    onNextStage(humanTime(this.state.sec), this.state.sec)
 	}
 }
 

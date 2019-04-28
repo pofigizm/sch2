@@ -13,7 +13,7 @@
 .tasks > li {
   list-style-position: inside;
   border-bottom: 1px solid black;
-  padding: 5px 115px 15px 10px;
+  padding: 5px 175px 15px 10px;
   min-height: 60px;
   position: relative;
 }
@@ -33,7 +33,7 @@
   top: 0;
   bottom: 0;
   right: 0;
-  width: 100px;
+  width: 160px;
   border-left: 1px solid black;
 }
 
@@ -42,16 +42,29 @@
   height: 20px;
 }
 
-.tasks > li > .input > button {
+.tasks .buttons {
+  display: flex;
   margin: 10px 20px 0;
+}
+
+.tasks .buttons > button {
+  margin-right: 10px;
   height: 20px;
-  background-color: #3f51b5;
+  background-color: lightgray;
   color: white;
   border: none;
   border-radius: 3px;
   cursor: pointer;
 }
 
-.tasks > li > .input > button:focus {
+.tasks .buttons > button.green {
+  background-color: green;
+}
+
+.tasks .buttons > button.red {
+  background-color: red;
+}
+
+.tasks .buttons > button:focus {
   outline: 0;
 }
