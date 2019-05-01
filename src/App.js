@@ -1,5 +1,6 @@
 import React from 'react'
 import Trial from './Trial'
+import Tasks from './Tasks'
 import tasksData from './tasks.json'
 import './App.css'
 
@@ -21,12 +22,19 @@ const shuffle = arr => {
   return res
 }
 
-const generate = tasks => {
+const generate = (tasks, problem) => {
   const all = Object.values(tasks)
-  const hard = all.filter(t => t.hard && !t.solved && !t.problem)
 
+  if (problem) {
+    return all.filter(t => !t.solved && t.problem)
+  }
+
+  const hard = all.filter(t => t.hard && !t.solved && !t.problem)
   return shuffle(hard).slice(0, 10)
 }
+
+const urlParams = new URLSearchParams(window.location.search)
+const problem = urlParams.get('problem')
 
 class App extends React.PureComponent {
   state = {
@@ -51,7 +59,7 @@ class App extends React.PureComponent {
           />
         ) }
 
-        { !current && (
+        { (!problem && !current) && (
           <div>
             <ul>
               { (this.state.trials || []).map(trial => (
@@ -60,8 +68,20 @@ class App extends React.PureComponent {
                 </li>
               )) }
             </ul>
-            <button className="newButton" onClick={this.handleStart}> Новое </button>
+            <button className="button" onClick={this.handleStart}> New </button>
+            <button className="button" onClick={this.handleDowndload}> Download </button>
           </div>
+        ) }
+
+        { Boolean(problem) && (
+          <Tasks
+            stage={1}
+            tasks={generate(this.state.tasks, true)}
+            answers={{}}
+            onSolved={() => {}}
+            onProblem={() => {}}
+            onAnswer={() => {}}
+          />
         ) }
           
       </div>
@@ -149,6 +169,16 @@ class App extends React.PureComponent {
       console.log(this.state)
       save(this.state)
     })
+  }
+
+  handleDowndload = () => {
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.state))
+    const downloadAnchorNode = document.createElement('a')
+    downloadAnchorNode.setAttribute('href', dataStr)
+    downloadAnchorNode.setAttribute('download', `sch2-local-data-${Date.now()}.json`)
+    document.body.appendChild(downloadAnchorNode)
+    downloadAnchorNode.click()
+    downloadAnchorNode.remove()
   }
 }
 
